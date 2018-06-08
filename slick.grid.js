@@ -1515,7 +1515,7 @@ if (typeof Slick === "undefined") {
       } else {
         $canvas[0].removeChild(cacheEntry.rowNode);
       }
-      
+
       delete rowsCache[row];
       delete postProcessedRows[row];
       renderedRows--;
@@ -1587,14 +1587,34 @@ if (typeof Slick === "undefined") {
 
       invalidatePostProcessingResults(row);
     }
-
+    function getHeightIfVisible(ele) {
+      if (ele && ele.is(':visible')) {
+        return ele.height();
+      } else {
+        return 0;
+      }
+    }
     function getViewportHeight() {
-      return parseFloat($.css($container[0], "height", true)) -
-          parseFloat($.css($container[0], "paddingTop", true)) -
-          parseFloat($.css($container[0], "paddingBottom", true)) -
-          parseFloat($.css($headerScroller[0], "height")) - getVBoxDelta($headerScroller) -
-          (options.showTopPanel ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0) -
-          (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0);
+      var a_old = parseFloat($.css($container[0], "height", true)); // cancel
+      var a = parseFloat($.css($("#main-container")[0], "height", true)); // use main-container instead of container because of miss-calculation when window height is very small.
+      var a2 = parseFloat($.css($("#main-container")[0], "padding-top", true));
+      var a3 = parseFloat($.css($("#main-container")[0], "padding-bottom", true));
+      var b = parseFloat($.css($container[0], "paddingTop", true));
+      var c = parseFloat($.css($container[0], "paddingBottom", true));
+      var d = parseFloat($.css($headerScroller[0], "height"));
+      var e = getVBoxDelta($headerScroller);
+      var f = (options.showTopPanel ? options.topPanelHeight + getVBoxDelta($topPanelScroller) : 0);
+      var g = (options.showHeaderRow ? options.headerRowHeight + getVBoxDelta($headerRowScroller) : 0);
+      // re-calculate because some dom element can be hidden
+      var h = getHeightIfVisible($('.tool-container.colorBlock-subheader.table-like.seam'));
+      var i = getHeightIfVisible($('.colorBlock-header.table-like.seam'));
+      var j = getHeightIfVisible($('#filter-container'));
+      var k = getHeightIfVisible($('#top-container'));
+
+      return a - a2 - a3 -
+          b - c - d - e - f - g -
+          h - i - j - k;
+
     }
 
     function resizeCanvas() {
@@ -1604,7 +1624,6 @@ if (typeof Slick === "undefined") {
       } else {
         viewportH = getViewportHeight();
       }
-
       numVisibleRows = Math.ceil(viewportH / options.rowHeight);
       viewportW = parseFloat($.css($container[0], "width", true));
       if (!options.autoHeight) {
@@ -2162,7 +2181,7 @@ if (typeof Slick === "undefined") {
           $canvas[0].removeChild(zombieRowNodeFromLastMouseWheelEvent);
           zombieRowNodeFromLastMouseWheelEvent = null;
         }
-        rowNodeFromLastMouseWheelEvent = rowNode;      
+        rowNodeFromLastMouseWheelEvent = rowNode;
       }
     }
 
@@ -2217,7 +2236,7 @@ if (typeof Slick === "undefined") {
             cancelEditAndSetFocus();
           } else if (e.which == 34) {
             navigatePageDown();
-            handled = true;           
+            handled = true;
           } else if (e.which == 33) {
             navigatePageUp();
             handled = true;
@@ -2774,7 +2793,7 @@ if (typeof Slick === "undefined") {
         var prevActivePosX = activePosX;
         while (cell <= activePosX) {
           if (canCellBeActive(row, cell)) {
-            prevCell = cell;  
+            prevCell = cell;
           }
           cell += getColspan(row, cell);
         }
