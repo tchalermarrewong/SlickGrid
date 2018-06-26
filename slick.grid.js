@@ -1611,10 +1611,8 @@ if (typeof Slick === "undefined") {
       var j = getHeightIfVisible($('#filter-container'));
       var k = getHeightIfVisible($('#top-container'));
 
-      return a - a2 - a3 -
-          b - c - d - e - f - g -
-          h - i - j - k;
-
+      return a_old -
+          b - c - d - e - f - g;
     }
 
     function resizeCanvas() {
